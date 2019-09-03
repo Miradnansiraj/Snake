@@ -147,7 +147,7 @@ public class Main extends Application {
         int x = (r.nextInt(20)*20); // values from 0 to 19 inclusively
         int y = (r.nextInt(20)*20);
         System.out.println(x + " " + y);
-        food = new Circle(x, y, 5);
+        food = new Circle(x+5, y+5, 5);
         setFoodAnimation();
 
         //Pane
@@ -162,20 +162,18 @@ public class Main extends Application {
     private void setMovement()
     {
         //The complex movement algorithms for the snake
-        movement = new Timeline(new KeyFrame(Duration.millis(900), (ActionEvent event) -> {
+        movement = new Timeline(new KeyFrame(Duration.millis(1000/5), (ActionEvent event) -> {
             //The right side movement
             if(input.equals(KeyCode.D.toString())  || input.equals(KeyCode.RIGHT.toString()))
             {
                 for (int i = 0; i < snakes.size(); i++) {
                     if(snakes.get(0).getX() == width-10)
                         movement.stop();
+                    if(i==0)
+                        snakes.get(0).setX(snakes.get(0).getX() + 10);
                     else {
-                        if(i==0)
-                            snakes.get(0).setX(snakes.get(0).getX() + 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
-                        }
+                        snakes.get(i).setX(lastKnownX.get(i - 1));
+                        snakes.get(i).setY(lastKnownY.get(i - 1));
                     }
                 }
                 lastKnownY();
@@ -186,14 +184,11 @@ public class Main extends Application {
                 for (int i = 0; i < snakes.size(); i++) {
                     if(snakes.get(0).getX() == 0)
                         movement.stop();
-                    else
-                    {
-                        if(i==0)
-                            snakes.get(0).setX(snakes.get(0).getX() - 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
-                        }
+                    if(i==0)
+                        snakes.get(0).setX(snakes.get(0).getX() - 10);
+                    else {
+                        snakes.get(i).setX(lastKnownX.get(i - 1));
+                        snakes.get(i).setY(lastKnownY.get(i - 1));
                     }
                 }
                 lastKnownY();
@@ -204,14 +199,11 @@ public class Main extends Application {
                 for (int i = 0; i < snakes.size(); i++) {
                     if(snakes.get(0).getY() == 0)
                         movement.stop();
-                    else
-                    {
-                        if(i==0)
-                            snakes.get(0).setY(snakes.get(0).getY() - 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
-                        }
+                    if(i==0)
+                        snakes.get(0).setY(snakes.get(0).getY() - 10);
+                    else {
+                        snakes.get(i).setX(lastKnownX.get(i - 1));
+                        snakes.get(i).setY(lastKnownY.get(i - 1));
                     }
                 }
                 lastKnownY();
@@ -222,21 +214,19 @@ public class Main extends Application {
                 for (int i = 0; i < snakes.size(); i++) {
                     if(snakes.get(0).getY() == 0)
                         movement.stop();
-                    else
-                    {
-                        if(i==0)
-                            snakes.get(0).setY(snakes.get(0).getY() + 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
-                        }
+                    if(i==0)
+                        snakes.get(0).setY(snakes.get(0).getY() + 10);
+                    else {
+                        snakes.get(i).setX(lastKnownX.get(i - 1));
+                        snakes.get(i).setY(lastKnownY.get(i - 1));
                     }
                 }
                 lastKnownY();
                 lastKnownX();
             }
 
-            if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()) {
+            if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()
+                || food.getCenterX() == snakes.get(0).getX()+5 && food.getCenterY() == snakes.get(0).getY()+5) {
                 foodEaten();
             }
             setScore();
@@ -272,8 +262,8 @@ public class Main extends Application {
                 }
         }
         System.out.println(x + " " + y);
-        food.setCenterX(x);
-        food.setCenterY(y);
+        food.setCenterX(x+5);
+        food.setCenterY(y+5);
     }
 
     private void setFoodAnimation()
