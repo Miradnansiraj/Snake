@@ -3,12 +3,10 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -22,19 +20,29 @@ import java.util.Random;
 
 
 public class Main extends Application {
+    //Content holders
     private BorderPane pane;
     private Pane playArea;
     private Scene scene;
+
+    //Timeline for movements
     private Timeline movement;
+    private String input = "";
+
+    //For viewing score
     private Text scoreText;
     private int score = 0;
-    private int width = 400;
-    private int height = 400;
-    private String input = "";
-    private Rectangle[] snakeEyes;
+
+    //dimension of playArea
+    private final int width = 400;
+    private final int height = 400;
+
+    //The snake and the lastKnown positions to be used by body
     private ArrayList<Rectangle> snakes;
     private ArrayList<Integer> lastKnownX;
     private ArrayList<Integer> lastKnownY;
+
+    //The food
     private static Circle food;
 
     @Override
@@ -63,8 +71,6 @@ public class Main extends Application {
 
     private HBox initTop()
     {
-        //HBox
-        HBox hBox = new HBox();
         Button start, reset;
         scoreText = new Text("Score: " + score);
 
@@ -83,7 +89,7 @@ public class Main extends Application {
                 start.setText("Start");
                 movement.stop();
                 //Respawn food
-                setFood();
+                spawnFood();
             }
         });
 
@@ -91,6 +97,8 @@ public class Main extends Application {
         reset = new Button("Reset");
         reset.setOnAction(event -> {
             pane.getChildren().removeAll();
+
+            //reset the score to 0
             score = 0;
             setScore();
             start.setText("Start");
@@ -108,10 +116,11 @@ public class Main extends Application {
             lastKnownY.add(height/2);
 
             //Respawn food
-            setFood();
+            spawnFood();
         });
 
         //HBox
+        HBox hBox = new HBox();
         hBox.setSpacing(100);
         hBox.setMaxHeight(25);
         hBox.getChildren().addAll(scoreText, start, reset);
@@ -153,87 +162,87 @@ public class Main extends Application {
     private void setMovement()
     {
         //The complex movement algorithms for the snake
-    movement = new Timeline(new KeyFrame(Duration.millis(900), (ActionEvent event) -> {
-        //The right side movement
-        if(input.equals(KeyCode.D.toString())  || input.equals(KeyCode.RIGHT.toString()))
-        {
-            for (int i = 0; i < snakes.size(); i++) {
-                if(snakes.get(0).getX() == width-10)
-                    movement.stop();
-                else {
-                    if(i==0)
-                        snakes.get(0).setX(snakes.get(0).getX() + 10);
+        movement = new Timeline(new KeyFrame(Duration.millis(900), (ActionEvent event) -> {
+            //The right side movement
+            if(input.equals(KeyCode.D.toString())  || input.equals(KeyCode.RIGHT.toString()))
+            {
+                for (int i = 0; i < snakes.size(); i++) {
+                    if(snakes.get(0).getX() == width-10)
+                        movement.stop();
                     else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
+                        if(i==0)
+                            snakes.get(0).setX(snakes.get(0).getX() + 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
                     }
                 }
+                lastKnownY();
+                lastKnownX();
             }
-            lastKnownY();
-            lastKnownX();
-        }
-        if(input.equals(KeyCode.A.toString())  || input.equals(KeyCode.LEFT.toString()))
-        {
-            for (int i = 0; i < snakes.size(); i++) {
-                if(snakes.get(0).getX() == 0)
-                    movement.stop();
-                else
-                {
-                    if(i==0)
-                        snakes.get(0).setX(snakes.get(0).getX() - 10);
-                    else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
+            if(input.equals(KeyCode.A.toString())  || input.equals(KeyCode.LEFT.toString()))
+            {
+                for (int i = 0; i < snakes.size(); i++) {
+                    if(snakes.get(0).getX() == 0)
+                        movement.stop();
+                    else
+                    {
+                        if(i==0)
+                            snakes.get(0).setX(snakes.get(0).getX() - 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
                     }
                 }
+                lastKnownY();
+                lastKnownX();
             }
-            lastKnownY();
-            lastKnownX();
-        }
-        if(input.equals(KeyCode.W.toString())  || input.equals(KeyCode.UP.toString()))
-        {
-            for (int i = 0; i < snakes.size(); i++) {
-                if(snakes.get(0).getY() == 0)
-                    movement.stop();
-                else
-                {
-                    if(i==0)
-                        snakes.get(0).setY(snakes.get(0).getY() - 10);
-                    else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
+            if(input.equals(KeyCode.W.toString())  || input.equals(KeyCode.UP.toString()))
+            {
+                for (int i = 0; i < snakes.size(); i++) {
+                    if(snakes.get(0).getY() == 0)
+                        movement.stop();
+                    else
+                    {
+                        if(i==0)
+                            snakes.get(0).setY(snakes.get(0).getY() - 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
                     }
                 }
+                lastKnownY();
+                lastKnownX();
             }
-            lastKnownY();
-            lastKnownX();
-        }
-        if(input.equals(KeyCode.S.toString()) || input.equals(KeyCode.DOWN.toString()))
-        {
-            for (int i = 0; i < snakes.size(); i++) {
-                if(snakes.get(0).getY() == 0)
-                    movement.stop();
-                else
-                {
-                    if(i==0)
-                        snakes.get(0).setY(snakes.get(0).getY() + 10);
-                    else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
+            if(input.equals(KeyCode.S.toString()) || input.equals(KeyCode.DOWN.toString()))
+            {
+                for (int i = 0; i < snakes.size(); i++) {
+                    if(snakes.get(0).getY() == 0)
+                        movement.stop();
+                    else
+                    {
+                        if(i==0)
+                            snakes.get(0).setY(snakes.get(0).getY() + 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
                     }
                 }
+                lastKnownY();
+                lastKnownX();
             }
-            lastKnownY();
-            lastKnownX();
-        }
 
-        if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()) {
-            foodEaten();
-        }
-        setScore();
-    }));
-    movement.setAutoReverse(false);
-    movement.setCycleCount(Timeline.INDEFINITE);
+            if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()) {
+                foodEaten();
+            }
+            setScore();
+        }));
+        movement.setAutoReverse(false);
+        movement.setCycleCount(Timeline.INDEFINITE);
     }
 
 
@@ -242,13 +251,12 @@ public class Main extends Application {
     }
 
     //utility functions
-
     private void setScore()
     {
         scoreText.setText("Score: " + score);
     }
 
-    private void setFood()
+    private void spawnFood()
     {
         Random r = new Random();
         int x = (r.nextInt(20)*20); // values from 0 to 19 inclusively
@@ -272,11 +280,19 @@ public class Main extends Application {
     {
         KeyFrame keyFrame = new KeyFrame(Duration.ZERO, new KeyValue(food.opacityProperty(), 0));
         KeyFrame keyFrame2 = new KeyFrame(new Duration(2000), new KeyValue(food.opacityProperty(), 1));
-        Timeline blink  = new Timeline(3000);
+        Timeline blink  = new Timeline(900);
         blink.setCycleCount(Timeline.INDEFINITE);
         blink.setAutoReverse(true);
         blink.getKeyFrames().addAll(keyFrame, keyFrame2);
         blink.play();
+
+        Timeline shrinkExpand = new Timeline(900);
+        KeyFrame shrink = new KeyFrame(Duration.ZERO, new KeyValue(food.radiusProperty(), 1));
+        KeyFrame expand = new KeyFrame(new Duration(2000), new KeyValue(food.radiusProperty(), 5));
+        shrinkExpand.setCycleCount(Timeline.INDEFINITE);
+        shrinkExpand.setAutoReverse(true);
+        shrinkExpand.getKeyFrames().addAll(shrink, expand);
+        shrinkExpand.play();
     }
 
     private void foodEaten()
@@ -288,7 +304,7 @@ public class Main extends Application {
         lastKnownX.add((int) snakes.get(snakes.size()-1).getX());
         lastKnownY.add((int) snakes.get(snakes.size()-1).getY());
         playArea.getChildren().addAll(snakes.get(snakes.size()-1));
-        setFood();
+        spawnFood();
     }
 
     private void lastKnownX()
