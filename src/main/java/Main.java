@@ -44,6 +44,9 @@ public class Main extends Application {
     private ArrayList<Rectangle> snakes;
     private ArrayList<Integer> lastKnownX;
     private ArrayList<Integer> lastKnownY;
+    //Death animation timeline
+    private Timeline deathBlink;
+    private KeyFrame snakeDisappear, snakeAppear;
 
     //The food
     private static Circle food;
@@ -118,6 +121,7 @@ public class Main extends Application {
             input = "";
             prevInput = "";
             pane.getChildren().clear();
+            //deathBlink.stop();
             snakes.clear();
             lastKnownX.clear();
             lastKnownY.clear();
@@ -165,16 +169,37 @@ public class Main extends Application {
             //Right side
             if(input.equals(KeyCode.D.toString())  || input.equals(KeyCode.RIGHT.toString()))
             {
+                //Check if youre pressing Right after Left or by itself
+                //to prevent snake moving in opposite direction
                 if(!prevInput.equals(KeyCode.A.toString()))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
-                        if(snakes.get(0).getX() == width)
-                            movement.stop();
-                        if(i==0)
-                            snakes.get(0).setX(snakes.get(0).getX() + 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1) {
+                            if(snakes.get(0).getX() == width-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setX(snakes.get(0).getX() + 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getX() == width-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setX(snakes.get(0).getX() + 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
                         }
                     }
                     lastKnownY();
@@ -182,16 +207,35 @@ public class Main extends Application {
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                if(prevInput.equals(KeyCode.A.toString()))
+                else if(prevInput.equals(KeyCode.A.toString()))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
-                        if(snakes.get(0).getX() == width)
-                            movement.stop();
-                        if(i==0)
-                            snakes.get(0).setX(snakes.get(0).getX() - 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1) {
+                            if(snakes.get(0).getX() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setX(snakes.get(0).getX() - 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getX() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setX(snakes.get(0).getX() - 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
                         }
                     }
                     lastKnownY();
@@ -201,33 +245,73 @@ public class Main extends Application {
             //Left side
             if(input.equals(KeyCode.A.toString())  || input.equals(KeyCode.LEFT.toString()))
             {
+                //Check if youre pressing Left after Right or by itself
+                //to prevent snake moving in opposite direction
                 if(!prevInput.equals(KeyCode.D.toString()))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
-                    if(snakes.get(0).getX() == -10)
-                        movement.stop();
-                    if(i==0)
-                        snakes.get(0).setX(snakes.get(0).getX() - 10);
-                    else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
-                    }
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1) {
+                            if(snakes.get(0).getX() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setX(snakes.get(0).getX() - 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getX() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setX(snakes.get(0).getX() - 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
+                        }
                 }
                     lastKnownY();
                     lastKnownX();
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                if(prevInput.equals(KeyCode.D.toString()))
+                else if(prevInput.equals(KeyCode.D.toString()))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
-                        if(snakes.get(0).getX() == -10)
-                            movement.stop();
-                        if(i==0)
-                            snakes.get(0).setX(snakes.get(0).getX() + 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1) {
+                            if(snakes.get(0).getX() == width-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setX(snakes.get(0).getX() + 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getX() == width-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setX(snakes.get(0).getX() + 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
                         }
                     }
                     lastKnownY();
@@ -237,15 +321,37 @@ public class Main extends Application {
             //Up side
             if(input.equals(KeyCode.W.toString())  || input.equals(KeyCode.UP.toString()))
             {
+                //Check if youre pressing Up after Down or by itself
+                //to prevent snake moving in opposite direction
                 if(!prevInput.equals(KeyCode.S.toString())) {
                     for (int i = 0; i < snakes.size(); i++) {
-                        if(snakes.get(0).getY() == 0)
-                            movement.stop();
-                        if(i==0)
-                            snakes.get(0).setY(snakes.get(0).getY() - 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1)
+                        {
+                            if(snakes.get(0).getY() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setY(snakes.get(0).getY() - 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getY() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setY(snakes.get(0).getY() - 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
                         }
                     }
                     lastKnownY();
@@ -253,15 +359,34 @@ public class Main extends Application {
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                if(prevInput.equals(KeyCode.S.toString())) {
+                else if(prevInput.equals(KeyCode.S.toString())) {
                     for (int i = 0; i < snakes.size(); i++) {
-                        if(snakes.get(0).getY() == 0)
-                            movement.stop();
-                        if(i==0)
-                            snakes.get(0).setY(snakes.get(0).getY() + 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1) {
+                            if(snakes.get(0).getY() == height-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setY(snakes.get(0).getY() + 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getY() == height-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setY(snakes.get(0).getY() + 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
                         }
                     }
                     lastKnownY();
@@ -271,15 +396,36 @@ public class Main extends Application {
             //Down side
             if(input.equals(KeyCode.S.toString()) || input.equals(KeyCode.DOWN.toString()))
             {
+                //Check if youre pressing Down after Up or by itself
+                //to prevent snake moving in opposite direction
                 if(!prevInput.equals(KeyCode.W.toString())) {
                     for (int i = 0; i < snakes.size(); i++) {
-                        if(snakes.get(0).getY() == 400)
-                            movement.stop();
-                        if(i==0)
-                            snakes.get(0).setY(snakes.get(0).getY() + 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1) {
+                            if(snakes.get(0).getY() == height-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setY(snakes.get(0).getY() + 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getY() == height-10)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setY(snakes.get(0).getY() + 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
                         }
                     }
                     lastKnownY();
@@ -287,15 +433,34 @@ public class Main extends Application {
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                if(prevInput.equals(KeyCode.W.toString())) {
+                else if(prevInput.equals(KeyCode.W.toString())) {
                     for (int i = 0; i < snakes.size(); i++) {
-                        if(snakes.get(0).getY() == 400)
-                            movement.stop();
-                        if(i==0)
-                            snakes.get(0).setY(snakes.get(0).getY() - 10);
-                        else {
-                            snakes.get(i).setX(lastKnownX.get(i - 1));
-                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        //the algorithm of snake movement doesnt work when theres only 1 body
+                        //so theres another algorithm for single snake body
+                        if(snakes.size()==1) {
+                            if(snakes.get(0).getY() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            else
+                                snakes.get(0).setY(snakes.get(0).getY() - 10);
+                        }
+                        else
+                        {
+                            if(snakes.get(0).getY() == 0)
+                            {
+                                System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                movement.stop();
+                                deathAnimation();
+                            }
+                            if(i==0)
+                                snakes.get(0).setY(snakes.get(0).getY() - 10);
+                            else {
+                                snakes.get(i).setX(lastKnownX.get(i - 1));
+                                snakes.get(i).setY(lastKnownY.get(i - 1));
+                            }
                         }
                     }
                     lastKnownY();
@@ -309,6 +474,7 @@ public class Main extends Application {
                 setScore();
             }
         });
+
         //The timeline
         movement = new Timeline();
         movement.setAutoReverse(false);
@@ -380,7 +546,15 @@ public class Main extends Application {
 
     private void deathAnimation()
     {
-
+        for (Rectangle snake : snakes) {
+            snakeDisappear = new KeyFrame(Duration.ZERO, new KeyValue(snake.opacityProperty(), 0));
+            snakeAppear = new KeyFrame(new Duration(1000 / 8.0), new KeyValue(snake.opacityProperty(), 1));
+            deathBlink = new Timeline(1000 / 8.0);
+            deathBlink.setCycleCount(Timeline.INDEFINITE);
+            deathBlink.setAutoReverse(true);
+            deathBlink.getKeyFrames().addAll(snakeDisappear, snakeAppear);
+            deathBlink.play();
+        }
     }
 
     private void foodEaten()
