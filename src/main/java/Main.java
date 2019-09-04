@@ -30,6 +30,7 @@ public class Main extends Application {
     private KeyFrame moveKeys;
     private int fpsCounter = 8;
     private String input = "";
+    private String prevInput = "";
 
     //For viewing score
     private Text scoreText;
@@ -63,7 +64,7 @@ public class Main extends Application {
         lastKnownX = new ArrayList<>();
         lastKnownY = new ArrayList<>();
         //initialize food
-        food = new Circle(5);
+        food = new Circle(5, Color.RED);
         initCentre();
 
         //movement animation
@@ -94,6 +95,7 @@ public class Main extends Application {
                 start.setText("Stop");
                 movement.play();
                 input = "";
+                prevInput = "";
             }
             else
             {
@@ -114,6 +116,7 @@ public class Main extends Application {
 
             //Reset the snake
             input = "";
+            prevInput = "";
             pane.getChildren().clear();
             snakes.clear();
             lastKnownX.clear();
@@ -159,25 +162,48 @@ public class Main extends Application {
     {
         //The complex movement algorithms for the snake
         moveKeys = new KeyFrame(setFPS(fpsCounter), (ActionEvent event) -> {
-            //The right side movement
+            //Right side
             if(input.equals(KeyCode.D.toString())  || input.equals(KeyCode.RIGHT.toString()))
             {
-                for (int i = 0; i < snakes.size(); i++) {
-                    if(snakes.get(0).getX() == width)
-                        movement.stop();
-                    if(i==0)
-                        snakes.get(0).setX(snakes.get(0).getX() + 10);
-                    else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
+                if(!prevInput.equals(KeyCode.A.toString()))
+                {
+                    for (int i = 0; i < snakes.size(); i++) {
+                        if(snakes.get(0).getX() == width)
+                            movement.stop();
+                        if(i==0)
+                            snakes.get(0).setX(snakes.get(0).getX() + 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
                     }
+                    lastKnownY();
+                    lastKnownX();
+                    prevInput = input;
                 }
-                lastKnownY();
-                lastKnownX();
+                //Keeps snake moving after pressing opposite key
+                if(prevInput.equals(KeyCode.A.toString()))
+                {
+                    for (int i = 0; i < snakes.size(); i++) {
+                        if(snakes.get(0).getX() == width)
+                            movement.stop();
+                        if(i==0)
+                            snakes.get(0).setX(snakes.get(0).getX() - 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
+                    }
+                    lastKnownY();
+                    lastKnownX();
+                }
             }
+            //Left side
             if(input.equals(KeyCode.A.toString())  || input.equals(KeyCode.LEFT.toString()))
             {
-                for (int i = 0; i < snakes.size(); i++) {
+                if(!prevInput.equals(KeyCode.D.toString()))
+                {
+                    for (int i = 0; i < snakes.size(); i++) {
                     if(snakes.get(0).getX() == -10)
                         movement.stop();
                     if(i==0)
@@ -187,54 +213,108 @@ public class Main extends Application {
                         snakes.get(i).setY(lastKnownY.get(i - 1));
                     }
                 }
-                lastKnownY();
-                lastKnownX();
+                    lastKnownY();
+                    lastKnownX();
+                    prevInput = input;
+                }
+                //Keeps snake moving after pressing opposite key
+                if(prevInput.equals(KeyCode.D.toString()))
+                {
+                    for (int i = 0; i < snakes.size(); i++) {
+                        if(snakes.get(0).getX() == -10)
+                            movement.stop();
+                        if(i==0)
+                            snakes.get(0).setX(snakes.get(0).getX() + 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
+                    }
+                    lastKnownY();
+                    lastKnownX();
+                }
             }
+            //Up side
             if(input.equals(KeyCode.W.toString())  || input.equals(KeyCode.UP.toString()))
             {
-                for (int i = 0; i < snakes.size(); i++) {
-                    if(snakes.get(0).getY() == 0)
-                        movement.stop();
-                    if(i==0)
-                        snakes.get(0).setY(snakes.get(0).getY() - 10);
-                    else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
+                if(!prevInput.equals(KeyCode.S.toString())) {
+                    for (int i = 0; i < snakes.size(); i++) {
+                        if(snakes.get(0).getY() == 0)
+                            movement.stop();
+                        if(i==0)
+                            snakes.get(0).setY(snakes.get(0).getY() - 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
                     }
+                    lastKnownY();
+                    lastKnownX();
+                    prevInput = input;
                 }
-                lastKnownY();
-                lastKnownX();
+                //Keeps snake moving after pressing opposite key
+                if(prevInput.equals(KeyCode.S.toString())) {
+                    for (int i = 0; i < snakes.size(); i++) {
+                        if(snakes.get(0).getY() == 0)
+                            movement.stop();
+                        if(i==0)
+                            snakes.get(0).setY(snakes.get(0).getY() + 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
+                    }
+                    lastKnownY();
+                    lastKnownX();
+                }
             }
+            //Down side
             if(input.equals(KeyCode.S.toString()) || input.equals(KeyCode.DOWN.toString()))
             {
-                for (int i = 0; i < snakes.size(); i++) {
-                    if(snakes.get(0).getY() == 400)
-                        movement.stop();
-                    if(i==0)
-                        snakes.get(0).setY(snakes.get(0).getY() + 10);
-                    else {
-                        snakes.get(i).setX(lastKnownX.get(i - 1));
-                        snakes.get(i).setY(lastKnownY.get(i - 1));
+                if(!prevInput.equals(KeyCode.W.toString())) {
+                    for (int i = 0; i < snakes.size(); i++) {
+                        if(snakes.get(0).getY() == 400)
+                            movement.stop();
+                        if(i==0)
+                            snakes.get(0).setY(snakes.get(0).getY() + 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
                     }
+                    lastKnownY();
+                    lastKnownX();
+                    prevInput = input;
                 }
-                lastKnownY();
-                lastKnownX();
+                //Keeps snake moving after pressing opposite key
+                if(prevInput.equals(KeyCode.W.toString())) {
+                    for (int i = 0; i < snakes.size(); i++) {
+                        if(snakes.get(0).getY() == 400)
+                            movement.stop();
+                        if(i==0)
+                            snakes.get(0).setY(snakes.get(0).getY() - 10);
+                        else {
+                            snakes.get(i).setX(lastKnownX.get(i - 1));
+                            snakes.get(i).setY(lastKnownY.get(i - 1));
+                        }
+                    }
+                    lastKnownY();
+                    lastKnownX();
+                }
             }
-
+            //Check if it ate food
             if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()
                     || food.getCenterX() == snakes.get(0).getX()+5 && food.getCenterY() == snakes.get(0).getY()+5) {
                 foodEaten();
+                setScore();
             }
-            setScore();
         });
-
         //The timeline
         movement = new Timeline();
         movement.setAutoReverse(false);
         movement.setCycleCount(Timeline.INDEFINITE);
         movement.getKeyFrames().addAll(moveKeys);
     }
-
 
     public static void main(String[] args) {
         launch(args);
@@ -278,6 +358,7 @@ public class Main extends Application {
         food.setCenterY(y+5);
     }
 
+    //animations
     private void setFoodAnimation()
     {
         disappear = new KeyFrame(Duration.ZERO, new KeyValue(food.opacityProperty(), 0));
@@ -295,6 +376,11 @@ public class Main extends Application {
         shrinkExpand.setAutoReverse(true);
         shrinkExpand.getKeyFrames().addAll(shrink, expand);
         shrinkExpand.play();
+    }
+
+    private void deathAnimation()
+    {
+
     }
 
     private void foodEaten()
