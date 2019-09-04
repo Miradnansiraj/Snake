@@ -21,12 +21,14 @@ import java.util.Random;
 
 public class Main extends Application {
     //Content holders
-    private BorderPane pane;
-    private Pane playArea;
+    private BorderPane borderPane;
+    private Pane pane;
     private Scene scene;
 
     //Timeline for movements
     private Timeline movement;
+    private KeyFrame moveKeys;
+    private int fpsCounter = 8;
     private String input = "";
 
     //For viewing score
@@ -37,29 +39,38 @@ public class Main extends Application {
     private final int width = 400;
     private final int height = 400;
 
-    //The snake and the lastKnown positions to be used by body
+    //The snake and the lastKnown positions to be used by bodies
     private ArrayList<Rectangle> snakes;
     private ArrayList<Integer> lastKnownX;
     private ArrayList<Integer> lastKnownY;
 
     //The food
     private static Circle food;
+    private KeyFrame disappear, appear, shrink, expand;
+    private Timeline blink, shrinkExpand;
 
     @Override
     public void start(Stage primaryStage) {
-        pane = new BorderPane();
+        borderPane = new BorderPane();
 
         //top
-        pane.setTop(initTop());
+        borderPane.setTop(initTop());
 
         //centre
-        pane.setCenter(initCentre());
+        pane = new Pane();
+        //initialize snake
+        snakes = new ArrayList<>();
+        lastKnownX = new ArrayList<>();
+        lastKnownY = new ArrayList<>();
+        //initialize food
+        food = new Circle(5);
+        initCentre();
 
         //movement animation
         setMovement();
 
         //scene
-        scene = new Scene(pane, width, height+25);
+        scene = new Scene(borderPane, width, height+25);
         scene.setOnKeyPressed(event -> input = event.getCode().toString());
 
         //stage
@@ -79,7 +90,7 @@ public class Main extends Application {
         start.setOnAction(event -> {
             if(start.getText().equals("Start"))
             {
-                pane.requestFocus();
+                borderPane.requestFocus();
                 start.setText("Stop");
                 movement.play();
                 input = "";
@@ -96,8 +107,6 @@ public class Main extends Application {
         //reset button
         reset = new Button("Reset");
         reset.setOnAction(event -> {
-            pane.getChildren().removeAll();
-
             //reset the score to 0
             score = 0;
             setScore();
@@ -105,18 +114,17 @@ public class Main extends Application {
 
             //Reset the snake
             input = "";
-            for (int i = 1; i < snakes.size(); i++) {
-                snakes.remove(i);
-            }
+            pane.getChildren().clear();
+            snakes.clear();
             lastKnownX.clear();
             lastKnownY.clear();
-            snakes.get(0).setX(width/2.0);
-            lastKnownX.add(width/2);
-            snakes.get(0).setY(height/2.0);
-            lastKnownY.add(height/2);
+            //create the initial snake at [200, 200]
+            initSnake();
 
-            //Respawn food
+            //initialize food
             spawnFood();
+            setFoodAnimation();
+            pane.getChildren().addAll(food);
         });
 
         //HBox
@@ -129,45 +137,33 @@ public class Main extends Application {
         return hBox;
     }
 
-    private Pane initCentre()
+    private void initCentre()
     {
-        playArea = new Pane();
-
-        //initialize snake
-        snakes = new ArrayList<>();
-        lastKnownX = new ArrayList<>();
-        lastKnownY = new ArrayList<>();
-        snakes.add(new Rectangle(width/2.0, height/2.0, width/40.0, height/40.0));
-        System.out.println(snakes);
-        lastKnownX.add( width/2);
-        lastKnownY.add( height/2);
+        //create the initial snake at [200, 200]
+        initSnake();
 
         //initialize food
-        Random r = new Random();
-        int x = (r.nextInt(20)*20); // values from 0 to 19 inclusively
-        int y = (r.nextInt(20)*20);
-        System.out.println(x + " " + y);
-        food = new Circle(x+5, y+5, 5);
+        spawnFood();
         setFoodAnimation();
 
         //Pane
-        playArea.requestFocus();
-        playArea.setMaxHeight(400);
-        playArea.setMaxWidth(400);
-        playArea.setBackground(new Background(new BackgroundFill(Color.web("#6ba651"), CornerRadii.EMPTY, Insets.EMPTY)));
-        playArea.getChildren().addAll(snakes.get(0), food);
-        return playArea;
+        pane.requestFocus();
+        pane.setMaxHeight(400);
+        pane.setMaxWidth(400);
+        pane.setBackground(new Background(new BackgroundFill(Color.web("#6ba651"), CornerRadii.EMPTY, Insets.EMPTY)));
+        pane.getChildren().addAll(food);
+        borderPane.setCenter(pane);
     }
 
     private void setMovement()
     {
         //The complex movement algorithms for the snake
-        movement = new Timeline(new KeyFrame(Duration.millis(1000/5), (ActionEvent event) -> {
+        moveKeys = new KeyFrame(setFPS(fpsCounter), (ActionEvent event) -> {
             //The right side movement
             if(input.equals(KeyCode.D.toString())  || input.equals(KeyCode.RIGHT.toString()))
             {
                 for (int i = 0; i < snakes.size(); i++) {
-                    if(snakes.get(0).getX() == width-10)
+                    if(snakes.get(0).getX() == width)
                         movement.stop();
                     if(i==0)
                         snakes.get(0).setX(snakes.get(0).getX() + 10);
@@ -182,7 +178,7 @@ public class Main extends Application {
             if(input.equals(KeyCode.A.toString())  || input.equals(KeyCode.LEFT.toString()))
             {
                 for (int i = 0; i < snakes.size(); i++) {
-                    if(snakes.get(0).getX() == 0)
+                    if(snakes.get(0).getX() == -10)
                         movement.stop();
                     if(i==0)
                         snakes.get(0).setX(snakes.get(0).getX() - 10);
@@ -212,7 +208,7 @@ public class Main extends Application {
             if(input.equals(KeyCode.S.toString()) || input.equals(KeyCode.DOWN.toString()))
             {
                 for (int i = 0; i < snakes.size(); i++) {
-                    if(snakes.get(0).getY() == 0)
+                    if(snakes.get(0).getY() == 400)
                         movement.stop();
                     if(i==0)
                         snakes.get(0).setY(snakes.get(0).getY() + 10);
@@ -226,13 +222,17 @@ public class Main extends Application {
             }
 
             if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()
-                || food.getCenterX() == snakes.get(0).getX()+5 && food.getCenterY() == snakes.get(0).getY()+5) {
+                    || food.getCenterX() == snakes.get(0).getX()+5 && food.getCenterY() == snakes.get(0).getY()+5) {
                 foodEaten();
             }
             setScore();
-        }));
+        });
+
+        //The timeline
+        movement = new Timeline();
         movement.setAutoReverse(false);
         movement.setCycleCount(Timeline.INDEFINITE);
+        movement.getKeyFrames().addAll(moveKeys);
     }
 
 
@@ -241,6 +241,18 @@ public class Main extends Application {
     }
 
     //utility functions
+    private void initSnake()
+    {
+        //Add initial snake at [200, 200]
+        snakes.add(new Rectangle(width/2.0, height/2.0, width/40.0, height/40.0));
+        System.out.println(snakes);
+        lastKnownX.add( width/2);
+        System.out.println("X: " + lastKnownX);
+        lastKnownY.add( height/2);
+        System.out.println("Y: " + lastKnownY);
+        pane.getChildren().addAll(snakes.get(0));
+    }
+
     private void setScore()
     {
         scoreText.setText("Score: " + score);
@@ -261,24 +273,24 @@ public class Main extends Application {
                     y = (r.nextInt(20) * 20);
                 }
         }
-        System.out.println(x + " " + y);
+        System.out.println("Food: " + x + " " + y);
         food.setCenterX(x+5);
         food.setCenterY(y+5);
     }
 
     private void setFoodAnimation()
     {
-        KeyFrame keyFrame = new KeyFrame(Duration.ZERO, new KeyValue(food.opacityProperty(), 0));
-        KeyFrame keyFrame2 = new KeyFrame(new Duration(2000), new KeyValue(food.opacityProperty(), 1));
-        Timeline blink  = new Timeline(900);
+        disappear = new KeyFrame(Duration.ZERO, new KeyValue(food.opacityProperty(), 0));
+        appear = new KeyFrame(new Duration(2000), new KeyValue(food.opacityProperty(), 1));
+        blink  = new Timeline(1000/8.0);
         blink.setCycleCount(Timeline.INDEFINITE);
         blink.setAutoReverse(true);
-        blink.getKeyFrames().addAll(keyFrame, keyFrame2);
+        blink.getKeyFrames().addAll(disappear, appear);
         blink.play();
 
-        Timeline shrinkExpand = new Timeline(900);
-        KeyFrame shrink = new KeyFrame(Duration.ZERO, new KeyValue(food.radiusProperty(), 1));
-        KeyFrame expand = new KeyFrame(new Duration(2000), new KeyValue(food.radiusProperty(), 5));
+        shrinkExpand = new Timeline(1000/8.0);
+        shrink = new KeyFrame(Duration.ZERO, new KeyValue(food.radiusProperty(), 1));
+        expand = new KeyFrame(new Duration(2000), new KeyValue(food.radiusProperty(), 5));
         shrinkExpand.setCycleCount(Timeline.INDEFINITE);
         shrinkExpand.setAutoReverse(true);
         shrinkExpand.getKeyFrames().addAll(shrink, expand);
@@ -293,14 +305,17 @@ public class Main extends Application {
                 snakes.get(snakes.size()-1).getWidth(), snakes.get(snakes.size()-1).getHeight()));
         lastKnownX.add((int) snakes.get(snakes.size()-1).getX());
         lastKnownY.add((int) snakes.get(snakes.size()-1).getY());
-        playArea.getChildren().addAll(snakes.get(snakes.size()-1));
+        pane.getChildren().addAll(snakes.get(snakes.size()-1));
         spawnFood();
     }
 
     private void lastKnownX()
     {
         for (int i = 0; i < snakes.size(); i++) {
-            lastKnownX.set(i, (int) snakes.get(i).getX());
+            if(lastKnownX.get(i) == null)
+                lastKnownX.add(i, (int) snakes.get(i).getX());
+            else
+                lastKnownX.set(i, (int) snakes.get(i).getX());
         }
         System.out.println("X: " + lastKnownX);
     }
@@ -308,8 +323,16 @@ public class Main extends Application {
     private void lastKnownY()
     {
         for (int i = 0; i < snakes.size(); i++) {
-            lastKnownY.set(i, (int) snakes.get(i).getY());
+            if(lastKnownY.get(i) == null)
+                lastKnownY.add(i, (int) snakes.get(i).getY());
+            else
+                lastKnownY.set(i, (int) snakes.get(i).getY());
         }
         System.out.println("Y: " + lastKnownY);
+    }
+
+    private Duration setFPS(int fps)
+    {
+        return Duration.millis(1000/((double) fps));
     }
 }
