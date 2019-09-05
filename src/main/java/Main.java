@@ -188,11 +188,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == width-10)
+                            if(snakes.get(0).getX() == width)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setX(snakes.get(0).getX() - 10);
+                                    else {
+                                        System.out.println("X before dying " + lastKnownX);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setX(snakes.get(0).getX() + 10);
@@ -224,11 +235,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == 0)
+                            if(snakes.get(0).getX() == -10)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setX(snakes.get(0).getX() + 10);
+                                    else {
+                                        System.out.println("X before dying " + lastKnownX);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setX(snakes.get(0).getX() - 10);
@@ -264,11 +286,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == 0)
+                            if(snakes.get(0).getX() == -10)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setX(snakes.get(0).getX() + 10);
+                                    else {
+                                        System.out.println("X before dying " + lastKnownX);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setX(snakes.get(0).getX() - 10);
@@ -300,11 +333,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == width-10)
+                            if(snakes.get(0).getX() == width)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setX(snakes.get(0).getX() - 10);
+                                    else {
+                                        System.out.println("X before dying " + lastKnownX);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setX(snakes.get(0).getX() + 10);
@@ -340,11 +384,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == 0)
+                            if(snakes.get(0).getY() == -10)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setY(snakes.get(0).getY() + 10);
+                                    else {
+                                        System.out.println("Y before dying " + lastKnownY);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setY(snakes.get(0).getY() - 10);
@@ -375,11 +430,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == height-10)
+                            if(snakes.get(0).getY() == height)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setY(snakes.get(0).getY() - 10);
+                                    else {
+                                        System.out.println("Y before dying " + lastKnownY);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setY(snakes.get(0).getY() + 10);
@@ -414,11 +480,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == height-10)
+                            if(snakes.get(0).getY() == height)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setY(snakes.get(0).getY() - 10);
+                                    else {
+                                        System.out.println("Y before dying " + lastKnownY);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setY(snakes.get(0).getY() + 10);
@@ -449,11 +526,22 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == 0)
+                            if(snakes.get(0).getY() == -10)
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
+                                //Fix snake position after death
+                                for (int j = 0; j < snakes.size(); j++) {
+                                    if(j==0)
+                                        snakes.get(0).setY(snakes.get(0).getY() + 10);
+                                    else {
+                                        System.out.println("Y before dying " + lastKnownY);
+                                        snakes.get(j).setX(lastKnownX.get(j));
+                                        snakes.get(j).setY(lastKnownY.get(j));
+                                    }
+                                }
                                 movement.stop();
                                 deathAnimation();
+                                break;
                             }
                             if(i==0)
                                 snakes.get(0).setY(snakes.get(0).getY() - 10);
