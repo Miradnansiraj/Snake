@@ -4,6 +4,8 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -22,6 +24,7 @@ import java.util.Random;
 public class Main extends Application {
     //Content holders
     private BorderPane borderPane;
+    private AnchorPane anchorPane;
     private Pane pane;
     private Scene scene;
 
@@ -84,7 +87,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private HBox initTop()
+    private AnchorPane initTop()
     {
         Button start, reset;
         scoreText = new Text("Score: " + score);
@@ -136,12 +139,27 @@ public class Main extends Application {
 
         //HBox
         HBox hBox = new HBox();
-        hBox.setSpacing(100);
+        hBox.setSpacing(3);
         hBox.setMaxHeight(25);
-        hBox.getChildren().addAll(scoreText, start, reset);
-        hBox.setBackground(new Background(new BackgroundFill(Color.web("#8c8c88"), CornerRadii.EMPTY, Insets.EMPTY)));
+        hBox.getChildren().addAll(start, reset);
         hBox.setMinHeight(25);
-        return hBox;
+
+        HBox hBox2 = new HBox();
+        hBox2.setSpacing(3);
+        hBox2.setMaxHeight(25);
+        hBox2.getChildren().addAll(scoreText);
+        hBox2.setMinHeight(25);
+        hBox2.setAlignment(Pos.CENTER);
+
+        anchorPane = new AnchorPane(hBox2, hBox);
+        anchorPane.setMaxHeight(25);
+        anchorPane.setMinHeight(25);
+        anchorPane.setBackground(new Background(new BackgroundFill(Color.web("#8c8c88"), CornerRadii.EMPTY, Insets.EMPTY)));
+        //Set score on Left
+        AnchorPane.setLeftAnchor(hBox2, 2.0);
+        //Set buttons on Right
+        AnchorPane.setRightAnchor(hBox, 2.0);
+        return anchorPane;
     }
 
     private void initCentre()
