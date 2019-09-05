@@ -171,7 +171,7 @@ public class Main extends Application {
             {
                 //Check if youre pressing Right after Left or by itself
                 //to prevent snake moving in opposite direction
-                if(!prevInput.equals(KeyCode.A.toString()))
+                if(!(prevInput.equals(KeyCode.A.toString()) || prevInput.equals(KeyCode.LEFT.toString())))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
@@ -207,7 +207,7 @@ public class Main extends Application {
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                else if(prevInput.equals(KeyCode.A.toString()))
+                else if((prevInput.equals(KeyCode.A.toString()) || prevInput.equals(KeyCode.LEFT.toString())))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
@@ -247,7 +247,7 @@ public class Main extends Application {
             {
                 //Check if youre pressing Left after Right or by itself
                 //to prevent snake moving in opposite direction
-                if(!prevInput.equals(KeyCode.D.toString()))
+                if(!(prevInput.equals(KeyCode.D.toString()) || prevInput.equals(KeyCode.RIGHT.toString())))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
@@ -283,7 +283,7 @@ public class Main extends Application {
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                else if(prevInput.equals(KeyCode.D.toString()))
+                else if((prevInput.equals(KeyCode.D.toString()) || prevInput.equals(KeyCode.RIGHT.toString())))
                 {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
@@ -323,7 +323,7 @@ public class Main extends Application {
             {
                 //Check if youre pressing Up after Down or by itself
                 //to prevent snake moving in opposite direction
-                if(!prevInput.equals(KeyCode.S.toString())) {
+                if(!(prevInput.equals(KeyCode.S.toString()) || prevInput.equals(KeyCode.DOWN.toString()))) {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
                         //so theres another algorithm for single snake body
@@ -359,7 +359,7 @@ public class Main extends Application {
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                else if(prevInput.equals(KeyCode.S.toString())) {
+                else if(prevInput.equals(KeyCode.S.toString()) || prevInput.equals(KeyCode.DOWN.toString())) {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
                         //so theres another algorithm for single snake body
@@ -398,7 +398,7 @@ public class Main extends Application {
             {
                 //Check if youre pressing Down after Up or by itself
                 //to prevent snake moving in opposite direction
-                if(!prevInput.equals(KeyCode.W.toString())) {
+                if(!(prevInput.equals(KeyCode.W.toString()) || prevInput.equals(KeyCode.UP.toString()))) {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
                         //so theres another algorithm for single snake body
@@ -433,7 +433,7 @@ public class Main extends Application {
                     prevInput = input;
                 }
                 //Keeps snake moving after pressing opposite key
-                else if(prevInput.equals(KeyCode.W.toString())) {
+                else if(prevInput.equals(KeyCode.W.toString()) || prevInput.equals(KeyCode.UP.toString())) {
                     for (int i = 0; i < snakes.size(); i++) {
                         //the algorithm of snake movement doesnt work when theres only 1 body
                         //so theres another algorithm for single snake body
