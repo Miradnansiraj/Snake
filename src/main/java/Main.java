@@ -64,6 +64,9 @@ public class Main extends Application {
     private ArrayList<Rectangle> snakes;
     private ArrayList<Integer> lastKnownX;
     private ArrayList<Integer> lastKnownY;
+    //Collision detection
+    private boolean isCollided = false;
+
     //Death animation timeline
     private Timeline deathBlink;
     private KeyFrame snakeDisappear, snakeAppear;
@@ -226,7 +229,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == width)
+                            if(snakes.get(0).getX() == width
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -273,7 +277,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == -10)
+                            if(snakes.get(0).getX() == -10
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -324,7 +329,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == -10)
+                            if(snakes.get(0).getX() == -10
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -371,7 +377,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getX() == width)
+                            if(snakes.get(0).getX() == width
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -422,7 +429,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == -10)
+                            if(snakes.get(0).getY() == -10
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -468,7 +476,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == height)
+                            if(snakes.get(0).getY() == height
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -518,7 +527,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == height)
+                            if(snakes.get(0).getY() == height
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -564,7 +574,8 @@ public class Main extends Application {
                         }
                         else
                         {
-                            if(snakes.get(0).getY() == -10)
+                            if(snakes.get(0).getY() == -10
+                                    || collidedBody(snakes.get(0).getX(), snakes.get(0).getY()))
                             {
                                 System.out.println("Died at: " + snakes.get(0).getX() + ", " + snakes.get(0).getY());
                                 //Fix snake position after death
@@ -753,6 +764,19 @@ public class Main extends Application {
             numTicksHeld++;
         System.out.println("ticks: " + numTicksHeld);
             if(numTicksHeld >= 2)
-                movement.setRate(4);
+                movement.setRate(8);
+    }
+
+    private boolean collidedBody(double x, double y)
+    {
+        if(snakes.size() >= 3)
+        for (int i = 3; i < snakes.size(); i++) {
+            if (x == snakes.get(i).getX() && y == snakes.get(i).getY())
+            {
+                isCollided = true;
+                return true;
+            }
+        }
+        return false;
     }
 }
