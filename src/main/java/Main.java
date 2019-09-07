@@ -64,9 +64,6 @@ public class Main extends Application {
     private ArrayList<Rectangle> snakes;
     private ArrayList<Integer> lastKnownX;
     private ArrayList<Integer> lastKnownY;
-    //Collision detection
-    private boolean isCollided = false;
-
     //Death animation timeline
     private Timeline deathBlink;
     private KeyFrame snakeDisappear, snakeAppear;
@@ -605,11 +602,12 @@ public class Main extends Application {
                 }
             }
             //Check if it ate food
-            if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()
+            if(!isDead)
+                if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()
                     || food.getCenterX() == snakes.get(0).getX()+5 && food.getCenterY() == snakes.get(0).getY()+5) {
-                foodEaten();
-                setScore();
-            }
+                    foodEaten();
+                    setScore();
+                }
         });
 
         //The timeline
@@ -772,10 +770,7 @@ public class Main extends Application {
         if(snakes.size() >= 3)
         for (int i = 3; i < snakes.size(); i++) {
             if (x == snakes.get(i).getX() && y == snakes.get(i).getY())
-            {
-                isCollided = true;
                 return true;
-            }
         }
         return false;
     }
