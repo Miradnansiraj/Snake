@@ -47,6 +47,8 @@ public class Main extends Application {
     private final String[] acceptedKeys= {KeyCode.UP.toString(), KeyCode.DOWN.toString(),
             KeyCode.LEFT.toString(), KeyCode.RIGHT.toString(), KeyCode.W.toString(), KeyCode.A.toString(),
             KeyCode.S.toString(), KeyCode.D.toString()};
+    //keyHeld duration
+    private long numTicksHeld = 0;
 
     //For viewing score
     private Text scoreText;
@@ -94,8 +96,8 @@ public class Main extends Application {
         //scene
         scene = new Scene(borderPane, width, height+menuHeight);
         scene.getStylesheets().add("main.css");
-        scene.setOnKeyPressed(event -> {input = event.getCode().toString(); if(validKey(event)) movement.setRate(4);});
-        scene.setOnKeyReleased(event -> movement.setRate(1));
+        scene.setOnKeyPressed(event -> {if(validKey(event)){input = event.getCode().toString();tick();}});
+        scene.setOnKeyReleased(event -> {movement.setRate(1); numTicksHeld = 0;});
 
         //stage
         primaryStage.setScene(scene);
@@ -745,5 +747,12 @@ public class Main extends Application {
             }
         }
         return false;
+    }
+
+    private void tick() {
+            numTicksHeld++;
+        System.out.println("ticks: " + numTicksHeld);
+            if(numTicksHeld >= 2)
+                movement.setRate(4);
     }
 }
