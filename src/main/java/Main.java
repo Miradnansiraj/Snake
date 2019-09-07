@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -38,9 +39,14 @@ public class Main extends Application {
     //Timeline for movements
     private Timeline movement;
     private KeyFrame moveKeys;
-    private int fpsCounter = 8;
+    //Set the fps of movement here
+    private double fpsCounter = 2;
     private String input = "";
     private String prevInput = "";
+    //Accepted keys
+    private final String[] acceptedKeys= {KeyCode.UP.toString(), KeyCode.DOWN.toString(),
+            KeyCode.LEFT.toString(), KeyCode.RIGHT.toString(), KeyCode.W.toString(), KeyCode.A.toString(),
+            KeyCode.S.toString(), KeyCode.D.toString()};
 
     //For viewing score
     private Text scoreText;
@@ -88,7 +94,8 @@ public class Main extends Application {
         //scene
         scene = new Scene(borderPane, width, height+menuHeight);
         scene.getStylesheets().add("main.css");
-        scene.setOnKeyPressed(event -> input = event.getCode().toString());
+        scene.setOnKeyPressed(event -> {input = event.getCode().toString(); if(validKey(event)) movement.setRate(4);});
+        scene.setOnKeyReleased(event -> movement.setRate(1));
 
         //stage
         primaryStage.setScene(scene);
@@ -593,15 +600,13 @@ public class Main extends Application {
         });
 
         //The timeline
-        movement = new Timeline();
+        movement = new Timeline(1000/fpsCounter);
         movement.setAutoReverse(false);
         movement.setCycleCount(Timeline.INDEFINITE);
         movement.getKeyFrames().addAll(moveKeys);
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) {launch(args);}
 
     //utility functions
     private void initSnake()
@@ -616,10 +621,7 @@ public class Main extends Application {
         pane.getChildren().addAll(snakes.get(0));
     }
 
-    private void setScore()
-    {
-        scoreText.setText("Score: " + score);
-    }
+    private void setScore() {scoreText.setText("Score: " + score);}
 
     private void spawnFood()
     {
@@ -667,7 +669,7 @@ public class Main extends Application {
             snakeDisappear = new KeyFrame(Duration.ZERO, new KeyValue(snake.opacityProperty(), 0));
             snakeAppear = new KeyFrame(new Duration(1000 / 8.0), new KeyValue(snake.opacityProperty(), 1));
             deathBlink = new Timeline(1000 / 8.0);
-            deathBlink.setCycleCount(Timeline.INDEFINITE);
+            deathBlink.setCycleCount(101);
             deathBlink.setAutoReverse(true);
             deathBlink.getKeyFrames().addAll(snakeDisappear, snakeAppear);
             deathBlink.play();
@@ -709,10 +711,7 @@ public class Main extends Application {
         System.out.println("Y: " + lastKnownY);
     }
 
-    private Duration setFPS(int fps)
-    {
-        return Duration.millis(1000/((double) fps));
-    }
+    private Duration setFPS(double fps) {return Duration.millis(1000/fps);}
 
     private void resetBoard()
     {
@@ -736,5 +735,15 @@ public class Main extends Application {
         spawnFood();
         setFoodAnimation();
         pane.getChildren().addAll(food);
+    }
+
+    private boolean validKey(KeyEvent event)
+    {
+        for (String acceptedKey : acceptedKeys) {
+            if (event.getCode().toString().contains(acceptedKey)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
