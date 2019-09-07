@@ -4,7 +4,6 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,6 +26,11 @@ public class Main extends Application {
     private AnchorPane anchorPane;
     private Pane pane;
     private Scene scene;
+
+    //Buttons
+    private Button start, reset;
+    private boolean isDead = false;
+    private boolean isStopped = false;
 
     //Timeline for movements
     private Timeline movement;
@@ -89,7 +93,6 @@ public class Main extends Application {
 
     private AnchorPane initTop()
     {
-        Button start, reset;
         scoreText = new Text("Score: " + score);
 
         //start button
@@ -97,6 +100,20 @@ public class Main extends Application {
         start.setOnAction(event -> {
             if(start.getText().equals("Start"))
             {
+                if(isDead)
+                {
+                    //Starting the game after death
+                    resetBoard();
+                    isDead = false;
+                }
+
+                else if(isStopped)
+                {
+                    //Starting the game after stop
+                    resetBoard();
+                    isStopped = false;
+                }
+                //Initial start
                 borderPane.requestFocus();
                 start.setText("Stop");
                 movement.play();
@@ -105,37 +122,20 @@ public class Main extends Application {
             }
             else
             {
+                if(isDead)
+                {
+                    resetBoard();
+                    isDead = false;
+                }
                 start.setText("Start");
                 movement.stop();
-                //Respawn food
-                spawnFood();
+                isStopped = true;
             }
         });
 
         //reset button
         reset = new Button("Reset");
-        reset.setOnAction(event -> {
-            //reset the score to 0
-            score = 0;
-            setScore();
-            start.setText("Start");
-
-            //Reset the snake
-            input = "";
-            prevInput = "";
-            pane.getChildren().clear();
-            //deathBlink.stop();
-            snakes.clear();
-            lastKnownX.clear();
-            lastKnownY.clear();
-            //create the initial snake at [200, 200]
-            initSnake();
-
-            //initialize food
-            spawnFood();
-            setFoodAnimation();
-            pane.getChildren().addAll(food);
-        });
+        reset.setOnAction(event -> resetBoard());
 
         //HBox
         HBox hBox = new HBox();
@@ -661,6 +661,7 @@ public class Main extends Application {
             deathBlink.getKeyFrames().addAll(snakeDisappear, snakeAppear);
             deathBlink.play();
         }
+        isDead = true;
     }
 
     private void foodEaten()
@@ -700,5 +701,29 @@ public class Main extends Application {
     private Duration setFPS(int fps)
     {
         return Duration.millis(1000/((double) fps));
+    }
+
+    private void resetBoard()
+    {
+        //reset the score to 0
+        score = 0;
+        setScore();
+        start.setText("Start");
+
+        //Reset the snake
+        input = "";
+        prevInput = "";
+        pane.getChildren().clear();
+        //deathBlink.stop();
+        snakes.clear();
+        lastKnownX.clear();
+        lastKnownY.clear();
+        //create the initial snake at [200, 200]
+        initSnake();
+
+        //initialize food
+        spawnFood();
+        setFoodAnimation();
+        pane.getChildren().addAll(food);
     }
 }
