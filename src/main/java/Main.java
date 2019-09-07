@@ -12,6 +12,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontSmoothingType;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -46,6 +49,8 @@ public class Main extends Application {
     //dimension of playArea
     private final int width = 400;
     private final int height = 400;
+    //dimension of top menu
+    private final int menuHeight = 28;
 
     //The snake and the lastKnown positions to be used by bodies
     private ArrayList<Rectangle> snakes;
@@ -81,7 +86,8 @@ public class Main extends Application {
         setMovement();
 
         //scene
-        scene = new Scene(borderPane, width, height+25);
+        scene = new Scene(borderPane, width, height+menuHeight);
+        scene.getStylesheets().add("main.css");
         scene.setOnKeyPressed(event -> input = event.getCode().toString());
 
         //stage
@@ -93,10 +99,14 @@ public class Main extends Application {
 
     private AnchorPane initTop()
     {
+        //Displays score on menu
         scoreText = new Text("Score: " + score);
+        scoreText.setFontSmoothingType(FontSmoothingType.LCD);
+        scoreText.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
 
         //start button
         start = new Button("Start");
+        start.setMaxHeight(menuHeight-3);
         start.setOnAction(event -> {
             if(start.getText().equals("Start"))
             {
@@ -135,26 +145,27 @@ public class Main extends Application {
 
         //reset button
         reset = new Button("Reset");
+        reset.setMaxHeight(menuHeight-3);
         reset.setOnAction(event -> resetBoard());
 
         //HBox
         HBox hBox = new HBox();
         hBox.setSpacing(3);
-        hBox.setMaxHeight(25);
+        hBox.setMaxHeight(menuHeight);
         hBox.getChildren().addAll(start, reset);
-        hBox.setMinHeight(25);
+        hBox.setMinHeight(menuHeight);
 
         HBox hBox2 = new HBox();
         hBox2.setSpacing(3);
-        hBox2.setMaxHeight(25);
+        hBox2.setMaxHeight(menuHeight);
         hBox2.getChildren().addAll(scoreText);
-        hBox2.setMinHeight(25);
+        hBox2.setMinHeight(menuHeight);
         hBox2.setAlignment(Pos.CENTER);
 
         anchorPane = new AnchorPane(hBox2, hBox);
-        anchorPane.setMaxHeight(25);
-        anchorPane.setMinHeight(25);
-        anchorPane.setBackground(new Background(new BackgroundFill(Color.web("#8c8c88"), CornerRadii.EMPTY, Insets.EMPTY)));
+        anchorPane.setMaxHeight(menuHeight);
+        anchorPane.setMinHeight(menuHeight);
+        anchorPane.getStyleClass().add("top-menu");
         //Set score on Left
         AnchorPane.setLeftAnchor(hBox2, 2.0);
         //Set buttons on Right

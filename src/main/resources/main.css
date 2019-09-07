@@ -1,0 +1,9 @@
+.top-menu
+{
+    -fx-background-color: #6c916c;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #104f19;
+}
