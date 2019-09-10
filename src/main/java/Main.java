@@ -70,6 +70,7 @@ public class Main extends Application {
 
     //The food
     private static Circle food;
+    private int foodx, foody;
     private KeyFrame disappear, appear, shrink, expand;
     private Timeline blink, shrinkExpand;
 
@@ -605,6 +606,7 @@ public class Main extends Application {
             if(!isDead)
                 if(food.getCenterX() == snakes.get(0).getX() && food.getCenterY() == snakes.get(0).getY()
                     || food.getCenterX() == snakes.get(0).getX()+5 && food.getCenterY() == snakes.get(0).getY()+5) {
+
                     foodEaten();
                     setScore();
                 }
@@ -637,21 +639,26 @@ public class Main extends Application {
     private void spawnFood()
     {
         Random r = new Random();
-        int x = (r.nextInt(20)*20); // values from 0 to 19 inclusively
-        int y = (r.nextInt(20)*20);
+        foodx = (r.nextInt(20)*20); // values from 0 to 19 inclusively
+        foody = (r.nextInt(20)*20);
         for (Rectangle snake : snakes) {
-            if (snake.getX() == x)
-                while (x == snake.getX()) {
-                    x = (r.nextInt(20) * 20);
+            if (snake.getX() == foodx)
+                while (foodx == snake.getX()) {
+                    foodx = (r.nextInt(20) * 20);
                 }
-            if (snake.getY() == y)
-                while (y == snake.getY()) {
-                    y = (r.nextInt(20) * 20);
+            if (snake.getY() == foody)
+                while (foody == snake.getY()) {
+                    foody = (r.nextInt(20) * 20);
                 }
         }
-        System.out.println("Food: " + x + " " + y);
-        food.setCenterX(x+5);
-        food.setCenterY(y+5);
+        System.out.println("Food: " + foodx + " " + foody);
+        food.setCenterX(foodx +5);
+        food.setCenterY(foody +5);
+        if(blink!=null && shrinkExpand!=null)
+        {
+            blink.jumpTo(Duration.millis(2000));
+            shrinkExpand.jumpTo(Duration.millis(2000));
+        }
     }
 
     //animations
@@ -666,11 +673,11 @@ public class Main extends Application {
         blink.play();
 
         shrinkExpand = new Timeline(1000/8.0);
-        shrink = new KeyFrame(Duration.ZERO, new KeyValue(food.radiusProperty(), 1));
+        shrink = new KeyFrame(Duration.ZERO, new KeyValue(food.radiusProperty(), 2.5));
         expand = new KeyFrame(new Duration(2000), new KeyValue(food.radiusProperty(), 5));
         shrinkExpand.setCycleCount(Timeline.INDEFINITE);
         shrinkExpand.setAutoReverse(true);
-        shrinkExpand.getKeyFrames().addAll(shrink, expand);
+        shrinkExpand.getKeyFrames().addAll(expand, shrink);
         shrinkExpand.play();
     }
 
