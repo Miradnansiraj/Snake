@@ -19,10 +19,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
 import java.util.Random;
-
 
 public class Main extends Application {
     //Content holders
@@ -64,13 +62,17 @@ public class Main extends Application {
     private ArrayList<Rectangle> snakes;
     private ArrayList<Integer> lastKnownX;
     private ArrayList<Integer> lastKnownY;
+    //Snake dimensions
+    private final double snakeWidth = width/40.0;
+    private final double snakeHeight = height/40.0;
     //Death animation timeline
     private Timeline deathBlink;
     private KeyFrame snakeDisappear, snakeAppear;
 
     //The food
     private static Circle food;
-    private int foodx, foody;
+    private int foodX, foodY;
+    private Random r;
     private KeyFrame disappear, appear, shrink, expand;
     private Timeline blink, shrinkExpand;
 
@@ -610,6 +612,8 @@ public class Main extends Application {
                     foodEaten();
                     setScore();
                 }
+            //Update the shape of snake here
+            setShape(input);
         });
 
         //The timeline
@@ -625,35 +629,37 @@ public class Main extends Application {
     private void initSnake()
     {
         //Add initial snake at [200, 200]
-        snakes.add(new Rectangle(width/2.0, height/2.0, width/40.0, height/40.0));
+        snakes.add(new Rectangle(width/2.0, height/2.0, snakeWidth, snakeHeight));
         System.out.println(snakes);
         lastKnownX.add( width/2);
         System.out.println("X: " + lastKnownX);
         lastKnownY.add( height/2);
         System.out.println("Y: " + lastKnownY);
         pane.getChildren().addAll(snakes.get(0));
+        snakes.get(0).setArcHeight(15);
+        snakes.get(0).setArcWidth(5);
     }
 
     private void setScore() {scoreText.setText("Score: " + score);}
 
     private void spawnFood()
     {
-        Random r = new Random();
-        foodx = (r.nextInt(20)*20); // values from 0 to 19 inclusively
-        foody = (r.nextInt(20)*20);
+        r = new Random();
+        foodX = (r.nextInt(20)*20); // values from 0 to 19 inclusively
+        foodY = (r.nextInt(20)*20);
         for (Rectangle snake : snakes) {
-            if (snake.getX() == foodx)
-                while (foodx == snake.getX()) {
-                    foodx = (r.nextInt(20) * 20);
+            if (snake.getX() == foodX)
+                while (foodX == snake.getX()) {
+                    foodX = (r.nextInt(20) * 20);
                 }
-            if (snake.getY() == foody)
-                while (foody == snake.getY()) {
-                    foody = (r.nextInt(20) * 20);
+            if (snake.getY() == foodY)
+                while (foodY == snake.getY()) {
+                    foodY = (r.nextInt(20) * 20);
                 }
         }
-        System.out.println("Food: " + foodx + " " + foody);
-        food.setCenterX(foodx +5);
-        food.setCenterY(foody +5);
+        System.out.println("Food: " + foodX + " " + foodY);
+        food.setCenterX(foodX +5);
+        food.setCenterY(foodY +5);
         if(blink!=null && shrinkExpand!=null)
         {
             blink.jumpTo(Duration.millis(2000));
@@ -687,7 +693,7 @@ public class Main extends Application {
             snakeDisappear = new KeyFrame(Duration.ZERO, new KeyValue(snake.opacityProperty(), 0));
             snakeAppear = new KeyFrame(new Duration(1000 / 8.0), new KeyValue(snake.opacityProperty(), 1));
             deathBlink = new Timeline(1000 / 8.0);
-            deathBlink.setCycleCount(101);
+            deathBlink.setCycleCount(51);
             deathBlink.setAutoReverse(true);
             deathBlink.getKeyFrames().addAll(snakeDisappear, snakeAppear);
             deathBlink.play();
@@ -780,5 +786,24 @@ public class Main extends Application {
                 return true;
         }
         return false;
+    }
+
+    private void setShape(String s)
+    {
+        for (int i = 0; i < snakes.size(); i++) {
+                if(i==snakes.size()-1 && i!=0)
+                {
+                    //Changes shape of the tail of snake
+                    snakes.get(i).setArcWidth(10);
+                    snakes.get(i).setArcHeight(10);
+                }
+                else
+                {
+                    //Rest of the body
+                    //including head
+                    snakes.get(i).setArcHeight(15);
+                    snakes.get(i).setArcWidth(5);
+                }
+        }
     }
 }
