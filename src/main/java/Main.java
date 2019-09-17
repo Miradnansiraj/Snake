@@ -640,8 +640,8 @@ public class Main extends Application {
         lastKnownY.add( height/2);
         System.out.println("Y: " + lastKnownY);
         pane.getChildren().addAll(snakes.get(0));
-        snakes.get(0).setArcHeight(15);
-        snakes.get(0).setArcWidth(7);
+        snakes.get(0).setArcHeight(8);
+        snakes.get(0).setArcWidth(6);
         snakes.get(0).setEffect(innerShadow);
     }
 
@@ -802,14 +802,14 @@ public class Main extends Application {
             if(i==0)
             {
                 //Head
-                snakes.get(i).setArcWidth(7);
-                snakes.get(i).setArcHeight(15);
+                snakes.get(i).setArcWidth(6);
+                snakes.get(i).setArcHeight(8);
             }
             else if(i==snakes.size()-1)
             {
                 //Tail
-                snakes.get(i).setArcWidth(9);
-                snakes.get(i).setArcHeight(15);
+                snakes.get(i).setArcWidth(8);
+                snakes.get(i).setArcHeight(17);
             }
             else
             {
