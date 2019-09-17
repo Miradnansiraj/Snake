@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -68,6 +69,8 @@ public class Main extends Application {
     //Death animation timeline
     private Timeline deathBlink;
     private KeyFrame snakeDisappear, snakeAppear;
+    //Inner shadow for the snakes body
+    private InnerShadow innerShadow;
 
     //The food
     private static Circle food;
@@ -89,6 +92,7 @@ public class Main extends Application {
         snakes = new ArrayList<>();
         lastKnownX = new ArrayList<>();
         lastKnownY = new ArrayList<>();
+        innerShadow = new InnerShadow(2, Color.web("#477052"));
         //initialize food
         food = new Circle(5, Color.RED);
         initCentre();
@@ -637,7 +641,8 @@ public class Main extends Application {
         System.out.println("Y: " + lastKnownY);
         pane.getChildren().addAll(snakes.get(0));
         snakes.get(0).setArcHeight(15);
-        snakes.get(0).setArcWidth(5);
+        snakes.get(0).setArcWidth(7);
+        snakes.get(0).setEffect(innerShadow);
     }
 
     private void setScore() {scoreText.setText("Score: " + score);}
@@ -791,19 +796,27 @@ public class Main extends Application {
     private void setShape(String s)
     {
         for (int i = 0; i < snakes.size(); i++) {
-                if(i==snakes.size()-1 && i!=0)
-                {
-                    //Changes shape of the tail of snake
-                    snakes.get(i).setArcWidth(10);
-                    snakes.get(i).setArcHeight(10);
-                }
-                else
-                {
-                    //Rest of the body
-                    //including head
-                    snakes.get(i).setArcHeight(15);
-                    snakes.get(i).setArcWidth(5);
-                }
+            //cast inner shadow to all blocks
+            snakes.get(i).setEffect(innerShadow);
+
+            if(i==0)
+            {
+                //Head
+                snakes.get(i).setArcWidth(7);
+                snakes.get(i).setArcHeight(15);
+            }
+            else if(i==snakes.size()-1)
+            {
+                //Tail
+                snakes.get(i).setArcWidth(9);
+                snakes.get(i).setArcHeight(15);
+            }
+            else
+            {
+                //Rest of the body
+                snakes.get(i).setArcHeight(15);
+                snakes.get(i).setArcWidth(5);
+            }
         }
     }
 }
